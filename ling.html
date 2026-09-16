@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./estilo.css">
+  <title>Linguagens</title>
+</head>
+<body>
+  <main>
+            <section>
+                <h1>
+                LINGUAGENS
+                </h1>
+                <p>
+                    A linguagem é, em essência, qualquer sistema de sinais — sejam palavras, 
+                    gestos, sons ou códigos — utilizado para organizar o pensamento e possibilitar
+                    a troca de informações entre indivíduos ou máquinas. Ela funciona como uma ponte
+                    estruturada por regras (gramática ou sintaxe) que transforma ideias abstratas em 
+                    mensagens compreensíveis, abrangendo desde a fala cotidiana e a escrita até sistemas 
+                    complexos como a programação e a matemática, sendo a ferramenta fundamental para a 
+                    construção da cultura e do conhecimento compartilhado.
+                </p>   
+ 
+                <h3>
+                    EIXO 1
+                </h3>
+                <div class="container">
+
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 165842.png" class="rotacionar">
+                        <figcaption>Atividade Minha realidade digital</figcaption>
+                    </figure>
+
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 165836.png" class="rotacionar">
+                        <figcaption>Pronomes indefinido</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 163800.png" class="rotacionar">
+                        <figcaption>Vida por meio das telas</figcaption>
+                    </figure>
+                </div>
+                 <h3>
+                    EIXO 2
+                </h3>
+                <div class="container" id="eixo2-ling">
+
+                    <figure>
+                        <img src="./ling/Captura de tela 2026-06-19 133422.png" class="rotacionar">
+                        <figcaption>Movimento Black Power</figcaption>
+                    </figure>
+
+                    <figure>
+                        <img src="./ling/Captura de tela 2026-06-19 133406.png" class="rotacionar">
+                        <figcaption>Slide José Lins</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./ling/Captura de tela 2026-06-19 133414.png" class="rotacionar">
+                        <figcaption>Mulheres na Literatura</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./ling/image.png" class="rotacionar">
+                        <figcaption>Lista de Questão</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./ling/Captura de tela 2026-06-19 133642.png" class="rotacionar">
+                        <figcaption>Tipos e Generos textuais</figcaption>
+                    </figure>
+                </div>
+                 <h3>
+                    EIXO 3
+                </h3>
+                <div class="container" id="eixo3-ling"></div>
+
+                <h3>
+                    EIXO 4
+                </h3>
+                <div class="container" id="eixo4-ling"></div>
+
+                <div class="forma">
+                    <h3>Adicionar Atividade</h3>
+                    <form id="formAtividade-ling" onsubmit="return false;">
+                        <select id="eixoAtividade-ling">
+                            <option value="eixo2">EIXO 2</option>
+                            <option value="eixo3">EIXO 3</option>
+                            <option value="eixo4">EIXO 4</option>
+                        </select>
+                        <input type="text" id="nomeAtividade-ling" placeholder="Nome da atividade" required>
+                        <input type="file" id="arquivoAtividade-ling" accept="image/*" required>
+                        <button onclick="adicionarAtividade('ling')">Adicionar</button>
+                    </form>
+                </div>
+            </section>
+    </main>
+
+    <script>
+        function carregarAtividadesSalvas(pagina) {
+            var chave = 'atividades_' + pagina;
+            var salvos = localStorage.getItem(chave);
+            if (!salvos) return;
+            try {
+                var atividades = JSON.parse(salvos);
+                for (var i = 0; i < atividades.length; i++) {
+                    var container = document.getElementById(atividades[i].eixo + '-' + pagina);
+                    if (container) {
+                        var figure = document.createElement('figure');
+                        figure.innerHTML = '<img src="' + atividades[i].imagem + '" class="rotacionar"><figcaption>' + atividades[i].nome + '</figcaption>';
+                        container.appendChild(figure);
+                    }
+                }
+            } catch (err) {}
+        }
+
+        function adicionarAtividade(pagina) {
+            var eixo = document.getElementById('eixoAtividade-' + pagina).value;
+            var nome = document.getElementById('nomeAtividade-' + pagina).value;
+            var arquivo = document.getElementById('arquivoAtividade-' + pagina).files[0];
+            
+            if (!nome || !arquivo) {
+                alert('Preencha o nome e selecione uma imagem!');
+                return;
+            }
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var container = document.getElementById(eixo + '-' + pagina);
+                var figure = document.createElement('figure');
+                figure.innerHTML = '<img src="' + e.target.result + '" class="rotacionar"><figcaption>' + nome + '</figcaption>';
+                container.appendChild(figure);
+                
+                var chave = 'atividades_' + pagina;
+                var salvos = JSON.parse(localStorage.getItem(chave) || '[]');
+                salvos.push({ eixo: eixo, nome: nome, imagem: e.target.result });
+                localStorage.setItem(chave, JSON.stringify(salvos));
+                
+                document.getElementById('nomeAtividade-' + pagina).value = '';
+                document.getElementById('arquivoAtividade-' + pagina).value = '';
+            };
+            reader.readAsDataURL(arquivo);
+        }
+
+        carregarAtividadesSalvas('ling');
+    </script>
+  
+</body>
+</html>

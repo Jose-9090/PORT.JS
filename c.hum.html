@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humanas</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <main>
+        <section>
+            <h1>
+                CIÊNCIAS HUMANAS
+            </h1>
+            <p>
+                Nas Ciências Humanas, o conceito de linguagens é ampliado para além da gramática,
+                sendo entendido como uma prática social e cultural fundamental para a construção
+                de identidades e sentidos no mundo. Nessa perspectiva, as linguagens englobam não
+                apenas a fala e a escrita, mas também as artes, a literatura, as expressões corporais,
+                as mídias e as tecnologias, funcionando como ferramentas de poder, resistência e
+                interação que permitem ao ser humano interpretar a realidade, manifestar sua subjetividade 
+                e agir politicamente dentro da sociedade.
+            </p>   
+                <h3>
+                    EIXO 1
+                </h3>
+                <div class="container">
+
+                    <figure>
+                        <img src="./img/Captura de tela 2026-03-31 151608.png" class="rotacionar">
+                        <figcaption>Mapa Mental sobre os filósofos</figcaption>
+                    </figure>
+
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 163911.png" class="rotacionar">
+                        <figcaption>Mapa mental Racismo Ambiental</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 163942.png" class="rotacionar">
+                        <figcaption>Trabalho e Emoção</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./img/Captura de tela 2026-06-19 134504.png" class="rotacionar">
+                        <figcaption>Redação</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 163918.png" class="rotacionar">
+                        <figcaption>Representatividade Feminina</figcaption>
+                    </figure>
+            
+                </div>
+                <h3>
+                    EIXO 2
+                </h3>
+                <div class="container" id="eixo2-hum">
+
+                    <figure>
+                        <img src="./hum/Captura de tela 2026-06-19 134925.png" class="rotacionar">
+                        <figcaption>Tecnologia e Conflitos</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./hum/Captura de tela 2026-06-19 134912.png" class="rotacionar">
+                        <figcaption>Nova Ordem Mundial</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./hum/Captura de tela 2026-06-19 134935.png" class="rotacionar">
+                        <figcaption>Raízes históricas</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./hum/Captura de tela 2026-06-19 134919.png" class="rotacionar">
+                        <figcaption>Texto Dissertativo-Argumentativo</figcaption>
+                    </figure>
+                </div>
+
+                <h3>
+                    EIXO 3
+                </h3>
+                <div class="container" id="eixo3-hum"></div>
+
+                <h3>
+                    EIXO 4
+                </h3>
+                <div class="container" id="eixo4-hum"></div>
+
+                <div class="forma">
+                    <h3>Adicionar Atividade</h3>
+                    <form id="formAtividade-hum" onsubmit="return false;">
+                        <select id="eixoAtividade-hum">
+                            <option value="eixo2">EIXO 2</option>
+                            <option value="eixo3">EIXO 3</option>
+                            <option value="eixo4">EIXO 4</option>
+                        </select>
+                        <input type="text" id="nomeAtividade-hum" placeholder="Nome da atividade" required>
+                        <input type="file" id="arquivoAtividade-hum" accept="image/*" required>
+                        <button onclick="adicionarAtividade('hum')">Adicionar</button>
+                    </form>
+                </div>
+        </section>
+    </main>
+
+    <script>
+        function carregarAtividadesSalvas(pagina) {
+            var chave = 'atividades_' + pagina;
+            var salvos = localStorage.getItem(chave);
+            if (!salvos) return;
+            try {
+                var atividades = JSON.parse(salvos);
+                for (var i = 0; i < atividades.length; i++) {
+                    var container = document.getElementById(atividades[i].eixo + '-' + pagina);
+                    if (container) {
+                        var figure = document.createElement('figure');
+                        figure.innerHTML = '<img src="' + atividades[i].imagem + '" class="rotacionar"><figcaption>' + atividades[i].nome + '</figcaption>';
+                        container.appendChild(figure);
+                    }
+                }
+            } catch (err) {}
+        }
+
+        function adicionarAtividade(pagina) {
+            var eixo = document.getElementById('eixoAtividade-' + pagina).value;
+            var nome = document.getElementById('nomeAtividade-' + pagina).value;
+            var arquivo = document.getElementById('arquivoAtividade-' + pagina).files[0];
+            
+            if (!nome || !arquivo) {
+                alert('Preencha o nome e selecione uma imagem!');
+                return;
+            }
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var container = document.getElementById(eixo + '-' + pagina);
+                var figure = document.createElement('figure');
+                figure.innerHTML = '<img src="' + e.target.result + '" class="rotacionar"><figcaption>' + nome + '</figcaption>';
+                container.appendChild(figure);
+                
+                var chave = 'atividades_' + pagina;
+                var salvos = JSON.parse(localStorage.getItem(chave) || '[]');
+                salvos.push({ eixo: eixo, nome: nome, imagem: e.target.result });
+                localStorage.setItem(chave, JSON.stringify(salvos));
+                
+                document.getElementById('nomeAtividade-' + pagina).value = '';
+                document.getElementById('arquivoAtividade-' + pagina).value = '';
+            };
+            reader.readAsDataURL(arquivo);
+        }
+
+        carregarAtividadesSalvas('hum');
+    </script>
+    
+</body>
+</html>

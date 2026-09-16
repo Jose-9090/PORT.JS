@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natureza</title>
+    <link rel="stylesheet" href="./estilo.css">
+</head>
+<body>
+    <main>
+        <section>
+            <h3>
+                CIÊNCIAS DA NATUREZA
+            </h3>
+            <p>
+                Nas Ciências da Natureza, a linguagem é o conjunto de códigos, símbolos e 
+                modelos formais — como a Matemática, a notação química e a sequência genética — 
+                utilizados para descrever, medir e prever os fenômenos do universo de maneira 
+                universal e objetiva. Diferente das línguas humanas, essa linguagem busca eliminar 
+                ambiguidades, utilizando fórmulas físicas, reações químicas e diagramas para traduzir 
+                leis naturais em dados precisos que podem ser compreendidos por qualquer cientista, 
+                independentemente de sua cultura, funcionando como a ferramenta fundamental para a 
+                construção do conhecimento científico e a validação de experimentos.
+            </p>   
+                <h3>
+                    EIXO 1
+                </h3>
+                <div class="container">
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 164726.png" class="rotacionar">
+                        <figcaption>Classificação das Cadeias Carbônicas</figcaption>
+                    </figure>
+
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 164737.png" class="rotacionar">
+                        <figcaption>Meiose e Mitose</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 164753.png" class="rotacionar">
+                        <figcaption>Leis de Ohm</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./img/Captura de tela 2026-04-06 165145.png" class="rotacionar">
+                        <figcaption>Eletroestática</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./img/Captura de tela 2026-03-31 152323.png" class="rotacionar">
+                        <figcaption>Projeto Tinkercad</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./img/Captura de tela 2026-03-31 143813.png" class="rotacionar">
+                        <figcaption>Doenças por Agentes Quimicos</figcaption>
+                    </figure>
+                </div>
+                <h3>
+                    EIXO 2
+                </h3>
+                <div class="container" id="eixo2-nut">
+                    <figure>
+                        <img src="./nut/Captura de tela 2026-06-19 140132.png" class="rotacionar">
+                        <figcaption>Funções Orgânicas</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./nut/Captura de tela 2026-06-19 140126.png" class="rotacionar">
+                        <figcaption>principais teorias evolucionistas</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./nut/Captura de tela 2026-06-19 140139.png" class="rotacionar">
+                        <figcaption>pesquisa</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./nut/Captura de tela 2026-06-19 140118.png" class="rotacionar">
+                        <figcaption>Teorias da evolução</figcaption>
+                    </figure>
+                    
+
+                </div>
+
+                <h3>
+                    EIXO 3
+                </h3>
+                <div class="container" id="eixo3-nut"></div>
+
+                <h3>
+                    EIXO 4
+                </h3>
+                <div class="container" id="eixo4-nut"></div>
+
+                <div class="forma">
+                    <h3>Adicionar Atividade</h3>
+                    <form id="formAtividade-nut" onsubmit="return false;">
+                        <select id="eixoAtividade-nut">
+                            <option value="eixo2">EIXO 2</option>
+                            <option value="eixo3">EIXO 3</option>
+                            <option value="eixo4">EIXO 4</option>
+                        </select>
+                        <input type="text" id="nomeAtividade-nut" placeholder="Nome da atividade" required>
+                        <input type="file" id="arquivoAtividade-nut" accept="image/*" required>
+                        <button onclick="adicionarAtividade('nut')">Adicionar</button>
+                    </form>
+                </div>
+        </section>
+    </main>
+
+    <script>
+        function carregarAtividadesSalvas(pagina) {
+            var chave = 'atividades_' + pagina;
+            var salvos = localStorage.getItem(chave);
+            if (!salvos) return;
+            try {
+                var atividades = JSON.parse(salvos);
+                for (var i = 0; i < atividades.length; i++) {
+                    var container = document.getElementById(atividades[i].eixo + '-' + pagina);
+                    if (container) {
+                        var figure = document.createElement('figure');
+                        figure.innerHTML = '<img src="' + atividades[i].imagem + '" class="rotacionar"><figcaption>' + atividades[i].nome + '</figcaption>';
+                        container.appendChild(figure);
+                    }
+                }
+            } catch (err) {}
+        }
+
+        function adicionarAtividade(pagina) {
+            var eixo = document.getElementById('eixoAtividade-' + pagina).value;
+            var nome = document.getElementById('nomeAtividade-' + pagina).value;
+            var arquivo = document.getElementById('arquivoAtividade-' + pagina).files[0];
+            
+            if (!nome || !arquivo) {
+                alert('Preencha o nome e selecione uma imagem!');
+                return;
+            }
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var container = document.getElementById(eixo + '-' + pagina);
+                var figure = document.createElement('figure');
+                figure.innerHTML = '<img src="' + e.target.result + '" class="rotacionar"><figcaption>' + nome + '</figcaption>';
+                container.appendChild(figure);
+                
+                var chave = 'atividades_' + pagina;
+                var salvos = JSON.parse(localStorage.getItem(chave) || '[]');
+                salvos.push({ eixo: eixo, nome: nome, imagem: e.target.result });
+                localStorage.setItem(chave, JSON.stringify(salvos));
+                
+                document.getElementById('nomeAtividade-' + pagina).value = '';
+                document.getElementById('arquivoAtividade-' + pagina).value = '';
+            };
+            reader.readAsDataURL(arquivo);
+        }
+
+        carregarAtividadesSalvas('nut');
+    </script>
+</body>
+</html>
