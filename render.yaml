@@ -1,0 +1,26 @@
+# Render blueprint: cria o servidor de internet automaticamente
+# Acesse https://render.com -> New -> Blueprint e conecte este repositório.
+services:
+  - type: web
+    name: portfolio-jose
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      # Preencha com os dados do banco MySQL online (ex.: Aiven - plano gratuito).
+      # Vá em Aiven > Create Service > MySQL, copie Host, User, Password, Database Name
+      # e port SSL. Depois edite essas variáveis no painel do Render.
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_SSL
+        sync: false

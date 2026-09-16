@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:3000';
+// Serve via HTTP -> usa a própria origem (funciona no Render); aberto como arquivo -> chama o servidor local
+const API_URL = window.location.protocol.startsWith('http') ? '' : 'http://localhost:3000';
 
 async function logar() {
     var email = document.getElementById("login").value;
