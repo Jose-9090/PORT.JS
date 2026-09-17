@@ -1,17 +1,56 @@
  window.addEventListener('load', function () {
+            digitarNoScroll();
             setTimeout(function () {
                 document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
             }, 300);
         });
 
+        var codigoComando = '<node server.js -start>';
+        var scrollMaxDigitacao = 220;
+        var bootMostrado = false;
+        var progressoMaximo = 0;
+
+        function digitarNoScroll() {
+            var el = document.getElementById('typedText');
+            if (!el) return;
+
+            var y = Math.max(0, Math.min(window.scrollY, scrollMaxDigitacao));
+            var n = Math.round((y / scrollMaxDigitacao) * codigoComando.length);
+
+            if (n > progressoMaximo) progressoMaximo = n;
+
+            el.textContent = codigoComando.slice(0, progressoMaximo);
+
+            if (progressoMaximo >= codigoComando.length && !bootMostrado) {
+                bootMostrado = true;
+                setTimeout(mostrarBoot, 200);
+            }
+        }
+
+        function mostrarBoot() {
+            var out = document.getElementById('termOut');
+            var prog = document.getElementById('termProgress');
+            var done = document.getElementById('termDone');
+
+            if (out) out.classList.add('show');
+            setTimeout(function () {
+                if (prog) prog.classList.add('show');
+            }, 300);
+            setTimeout(function () {
+                if (done) done.classList.add('show');
+            }, 2900);
+        }
+
         var curtainRemoveu = false;
 
         window.addEventListener('scroll', function () {
+            digitarNoScroll();
+
             var curtain = document.getElementById('curtain');
             if (curtainRemoveu || !curtain) return;
 
-            if (window.scrollY > 20) {
+            if (window.scrollY > 420) {
                 curtainRemoveu = true;
                 curtain.classList.add('out');
 

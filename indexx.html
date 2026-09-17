@@ -12,16 +12,33 @@
 
 <body class="loading">
     <div class="curtain" id="curtain">
-        <div class="curtain-half top"></div>
-        <div class="curtain-half bottom"></div>
-        <div class="curtain-center">
-            <span class="curtain-logo">JOSE<span class="dot">.</span></span>
-            <p class="curtain-sub">JS Developer</p>
-            <div class="curtain-hint">
-                <span class="arrow">&#8595;</span>
-                <span>role para baixo</span>
+<div class="curtain-center">
+                <div class="curtain-logo">
+                    <span class="logo-top">Virtual</span>
+                    <span class="logo-main">&lt;Portfólio /&gt;</span>
+                </div>
+
+                <div class="terminal" id="terminal">
+                    <div class="terminal-bar">
+                        <span class="t-dot"></span>
+                        <span class="t-dot"></span>
+                        <span class="t-dot"></span>
+                        <span class="terminal-title">jose@portfolio — zsh</span>
+                    </div>
+                    <div class="terminal-body">
+                        <p class="term-line">
+                            <span class="prompt">jose@portfolio:~$</span>
+                            <span id="typedText"></span><span class="cursor"></span>
+                        </p>
+                        <p class="term-line terminal-out" id="termOut">> inicializando portfólio virtual...</p>
+                        <div class="term-progress" id="termProgress">
+                            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                        </div>
+                        <p class="term-line terminal-done" id="termDone"><span class="ok">[ ok ]</span> pronto — role para baixo ↓</p>
+                    </div>
+                </div>
             </div>
-        </div>
     </div>
     <div class="navbar">
         
