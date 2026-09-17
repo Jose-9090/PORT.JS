@@ -8,43 +8,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// UF: usa variáveis de ambiente (definidas no Render). Sem elas, tenta o MySQL local.
-const db = mysql.createPool({
+const db = mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
-    port: Number(process.env.DB_PORT) || 3306,
+    port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '12345',
     database: process.env.DB_NAME || 'login',
-    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
-    connectTimeout: 15000,
-    connectionLimit: 10
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
 });
 
-console.log(`Usando banco em ${process.env.DB_HOST || 'localhost'} (${process.env.DB_NAME || 'login'})`);
-
-// Cria a tabela automaticamente se ela ainda não existir (funciona no MySQL online).
-const CRIA_TABELA = `
-    CREATE TABLE IF NOT EXISTS usuarios (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        nome VARCHAR(200) NOT NULL,
-        email VARCHAR(200) NOT NULL UNIQUE,
-        senha VARCHAR(255) NOT NULL
-    )
-`;
-
-db.getConnection((err, conn) => {
+db.connect((err) => {
     if (err) {
-        console.error('Erro ao conectar ao banco de dados. Confira as variáveis DB_* no Render:', err.message);
+        console.error('Erro ao conectar ao banco de dados:', err);
         return;
     }
-    conn.query(CRIA_TABELA, (errTabela) => {
-        conn.release();
-        if (errTabela) {
-            console.error('Erro ao criar a tabela usuarios:', errTabela.message);
-            return;
-        }
-        console.log('Banco conectado e tabela usuarios pronta!');
-    });
+    console.log('Conectado ao MySQL com sucesso!');
 });
 
 app.post('/api/login', (req, res) => {
@@ -113,20 +91,8 @@ app.get('/', (req, res) => {
     res.send('Servidor do portfólio online!');
 });
 
-// Diagnóstico: acesse https://SEU-SITE/api/status para ver se o MySQL online responde.
-app.get('/api/status', (req, res) => {
-    db.query('SELECT 1', (err) => {
-        res.json({
-            online: true,
-            banco: err ? 'desconectado' : 'conectado',
-            erro: err ? err.message : null,
-            host: process.env.DB_HOST || 'localhost'
-        });
-    });
-});
-
 // Bloqueia acesso a arquivos sensíveis do projeto
-const BLOQUEADOS = ['/node_modules', '/server.js', '/package.json', '/package-lock.json', '/login2.sql', '/.git', '/.env', '/data'];
+const BLOQUEADOS = ['/node_modules', '/server.js', '/package.json', '/package-lock.json', '/login2.sql', '/.git'];
 
 app.use((req, res, next) => {
     const caminho = req.path.toLowerCase();
@@ -141,5 +107,5 @@ app.use(express.static(path.join(__dirname)));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
