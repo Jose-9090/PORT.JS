@@ -44,6 +44,21 @@
             document.getElementById('assistant').classList.add('minimized');
             document.getElementById('assistantBubble').classList.remove('visible');
         }
+
+        function alternarNav() {
+            var navbar = document.querySelector('.navbar');
+            if (navbar) navbar.classList.toggle('nav-open');
+        }
+
+        (function () {
+            var links = document.querySelectorAll('.nav-links a');
+            for (var i = 0; i < links.length; i++) {
+                links[i].addEventListener('click', function () {
+                    var navbar = document.querySelector('.navbar');
+                    if (navbar) navbar.classList.remove('nav-open');
+                });
+            }
+        })();
         function carregarAtividadesSalvas(pagina) {
             var chave = 'atividades_' + pagina;
             var salvos = localStorage.getItem(chave);

@@ -8,23 +8,45 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
+// Banco de dados MySQL (na internet, usa as variáveis DB_* definidas no Render).
+// No seu PC, usa o MySQL local: root / 12345 / login
+const db = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
+    port: Number(process.env.DB_PORT) || 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '12345',
     database: process.env.DB_NAME || 'login',
-    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
+    connectTimeout: 15000,
+    connectionLimit: 10
 });
 
-db.connect((err) => {
+// Verifica a conexão e cria a tabela automaticamente, se ela não existir.
+const CRIA_TABELA = `
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(200) NOT NULL,
+        email VARCHAR(200) NOT NULL UNIQUE,
+        senha VARCHAR(255) NOT NULL
+    )
+`;
+
+db.getConnection((err, conn) => {
     if (err) {
-        console.error('Erro ao conectar ao banco de dados:', err);
+        console.error('ERRO: nao consegui conectar no banco. Verifique MySQL e as variaveis DB_*.', err.message);
         return;
     }
-    console.log('Conectado ao MySQL com sucesso!');
+    conn.query(CRIA_TABELA, (errTabela) => {
+        conn.release();
+        if (errTabela) {
+            console.error('ERRO ao criar a tabela usuarios:', errTabela.message);
+            return;
+        }
+        console.log('Banco conectado e tabela usuarios pronta!');
+    });
 });
 
+// LOGIN
 app.post('/api/login', (req, res) => {
     const { email, senha } = req.body;
 
@@ -44,15 +66,16 @@ app.post('/api/login', (req, res) => {
                 success: true,
                 user: results[0]
             });
-        } else {
-            return res.status(401).json({
-                success: false,
-                message: 'E-mail ou senha inválidos!'
-            });
         }
+
+        return res.status(401).json({
+            success: false,
+            message: 'E-mail ou senha inválidos!'
+        });
     });
 });
 
+// CADASTRO
 app.post('/api/cadastro', (req, res) => {
     const { nome, email, senha } = req.body;
 
@@ -91,8 +114,20 @@ app.get('/', (req, res) => {
     res.send('Servidor do portfólio online!');
 });
 
+// Diagnóstico do banco. Acesse /api/status para ver se o MySQL responde.
+app.get('/api/status', (req, res) => {
+    db.query('SELECT 1', (err) => {
+        res.json({
+            online: true,
+            banco: err ? 'desconectado' : 'conectado',
+            erro: err ? err.message : null,
+            host: process.env.DB_HOST || 'localhost'
+        });
+    });
+});
+
 // Bloqueia acesso a arquivos sensíveis do projeto
-const BLOQUEADOS = ['/node_modules', '/server.js', '/package.json', '/package-lock.json', '/login2.sql', '/.git'];
+const BLOQUEADOS = ['/node_modules', '/server.js', '/package.json', '/package-lock.json', '/login2.sql', '/.git', '/.env'];
 
 app.use((req, res, next) => {
     const caminho = req.path.toLowerCase();

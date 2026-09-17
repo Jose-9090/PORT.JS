@@ -123,6 +123,25 @@ body {
     text-shadow: 0 0 20px var(--shadow);
 }
 
+.nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+}
+
+.nav-hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--namesPrin);
+    border-radius: 2px;
+}
+
 header {
     display: flex;
     align-items: center;
@@ -812,44 +831,59 @@ section {
 @media (max-width: 900px) {
 
     .navbar {
-        height: 50px;
+        height: 55px;
         width: 100%;
-
     }
 
     .navbar nav {
-        height: 65px;
-        margin-top: -10px;
-        justify-content: center;
+        height: 55px;
+        margin-top: 0;
+        justify-content: space-between;
         align-items: center;
-    }
-
-    .navbar .na {
-        margin-top: 59px;
-
-        flex-direction: column;
-        font-size: 59px;
-        letter-spacing: 0;
-        flex-shrink: 0;
-        gap: 50px;
+        margin-left: 16px;
+        margin-right: 16px;
     }
 
     .navbar h4 a {
         font-size: 15px;
+        white-space: nowrap;
+    }
+
+    .nav-hamburger {
+        display: flex;
     }
 
     .nav-links {
         display: flex;
-        gap: 20px;
+        flex-direction: column;
+        position: fixed;
+        top: 55px;
+        left: 0;
+        right: 0;
+        gap: 0;
+        margin: 0;
+        padding: 8px 0;
+        background: rgba(10, 6, 2, 0.97);
+        border-bottom: 1px solid var(--shadow);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        transform: translateY(-130%);
+        transition: transform 0.35s ease;
+        z-index: 999;
     }
 
-    .navbar li {
+    .navbar.nav-open .nav-links {
+        transform: translateY(0);
+    }
+
+    .nav-links li {
         margin: 0;
+        padding: 12px 0;
+        text-align: center;
     }
 
     .navbar a {
-        font-size: 10px;
-        margin-top: -20px;
+        font-size: 13px;
+        margin-top: 0;
     }
 
     header {
