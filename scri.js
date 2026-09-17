@@ -1,56 +1,70 @@
-// Serve via HTTP -> usa a própria origem (funciona no Render); aberto como arquivo -> chama o servidor local
-const API_URL = window.location.protocol.startsWith('http') ? '' : 'http://localhost:3000';
+// Login e cadastro salvos no navegador (localStorage).
+// Funciona no GitHub Pages, sem precisar de servidor nem banco externo.
+const CHAVE = 'usuarios_portfolio';
+
+function obterUsuarios() {
+    try {
+        return JSON.parse(localStorage.getItem(CHAVE) || '[]');
+    } catch (err) {
+        return [];
+    }
+}
+
+function salvarUsuarios(lista) {
+    localStorage.setItem(CHAVE, JSON.stringify(lista));
+}
 
 async function logar() {
-    var email = document.getElementById("login").value;
+    var email = document.getElementById("login").value.trim();
     var senha = document.getElementById("senha").value;
 
-    try {
-        const response = await fetch(`${API_URL}/api/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, senha })
-        });
+    if (!email || !senha) {
+        alert("Preencha todos os campos!");
+        return;
+    }
 
-        const data = await response.json();
+    var usuarios = obterUsuarios();
+    var usuario = usuarios.find(function (u) {
+        return u.email === email && u.senha === senha;
+    });
 
-        if (data.success) {
-            alert("Login realizado com sucesso!");
-            window.location.href = "indexx.html";
-        } else {
-            alert(data.message || "Usuário ou senha incorretos!");
-        }
-    } catch (error) {
-        alert("Erro ao conectar com o servidor. Verifique se o server.js está rodando.");
+    if (usuario) {
+        alert("Login realizado com sucesso!");
+        window.location.href = "indexx.html";
+    } else {
+        alert("E-mail ou senha inválidos!");
     }
 }
 
 async function cadastrar() {
-    var nome = document.getElementById("cadNome").value;
-    var email = document.getElementById("cadEmail").value;
+    var nome = document.getElementById("cadNome").value.trim();
+    var email = document.getElementById("cadEmail").value.trim();
     var senha = document.getElementById("cadSenha").value;
 
-    try {
-        const response = await fetch(`${API_URL}/api/cadastro`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, email, senha })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert("Cadastro realizado com sucesso! Faça login.");
-            document.getElementById("cadNome").value = "";
-            document.getElementById("cadEmail").value = "";
-            document.getElementById("cadSenha").value = "";
-            fecharCadastro();
-        } else {
-            alert(data.message || "Erro ao cadastrar!");
-        }
-    } catch (error) {
-        alert("Erro ao conectar com o servidor. Verifique se o server.js está rodando.");
+    if (!nome || !email || !senha) {
+        alert("Preencha todos os campos!");
+        return;
     }
+
+    var usuarios = obterUsuarios();
+
+    var jaExiste = usuarios.some(function (u) {
+        return u.email === email;
+    });
+
+    if (jaExiste) {
+        alert("Este e-mail já está cadastrado!");
+        return;
+    }
+
+    usuarios.push({ nome: nome, email: email, senha: senha });
+    salvarUsuarios(usuarios);
+
+    alert("Cadastro realizado com sucesso! Faça login.");
+    document.getElementById("cadNome").value = "";
+    document.getElementById("cadEmail").value = "";
+    document.getElementById("cadSenha").value = "";
+    fecharCadastro();
 }
 
 function cancelar() {
