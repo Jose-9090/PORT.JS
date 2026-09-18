@@ -163,3 +163,49 @@ function abrirCadastro() {
 function fecharCadastro() {
     document.getElementById("modalCadastro").classList.remove("active");
 }
+
+// ---------- Migração: envia os usuários antigos do navegador para a nuvem ----------
+// Quem já tinha criado conta antes (salva só no navegador) passa a funcionar
+// em qualquer dispositivo. Nada é apagado antes de dar certo.
+
+async function migrarUsuariosLocais() {
+    var banco = supabaseClient();
+    if (!banco) return;
+
+    var locais = obterUsuarios();
+    if (!locais.length) return;
+
+    var restantes = [];
+
+    for (var i = 0; i < locais.length; i++) {
+        var u = locais[i];
+        try {
+            var existe = await banco
+                .from('usuarios')
+                .select('id')
+                .eq('email', u.email)
+                .maybeSingle();
+
+            if (existe.error) throw existe.error;
+
+            if (!existe.data) {
+                var inserir = await banco
+                    .from('usuarios')
+                    .insert({ nome: u.nome, email: u.email, senha: u.senha });
+
+                if (inserir.error) throw inserir.error;
+            }
+        } catch (err) {
+            console.error('Não consegui migrar o usuário ' + u.email + ':', err.message);
+            restantes.push(u);
+        }
+    }
+
+    if (restantes.length === 0) {
+        localStorage.removeItem(CHAVE);
+    } else {
+        salvarUsuarios(restantes);
+    }
+}
+
+migrarUsuariosLocais();
