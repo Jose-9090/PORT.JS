@@ -7,14 +7,24 @@
 
 var supabaseClient = null;
 
+function supabaseUrlBase() {
+    // Remove "/rest/v1", "/" do final e espaços, para a URL ficar sempre no padrão certo.
+    try {
+        return new URL(SUPABASE_URL.trim()).origin;
+    } catch (err) {
+        return '';
+    }
+}
+
 function supabaseConfigurado() {
-    return typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined'
-        && SUPABASE_URL && SUPABASE_ANON_KEY;
+    return typeof SUPABASE_ANON_KEY !== 'undefined'
+        && supabaseUrlBase()
+        && SUPABASE_ANON_KEY.trim();
 }
 
 try {
     if (supabaseConfigurado()) {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        supabaseClient = supabase.createClient(supabaseUrlBase(), SUPABASE_ANON_KEY.trim());
     }
 } catch (err) {
     console.error('Supabase não configurado ainda:', err.message);

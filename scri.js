@@ -6,10 +6,19 @@
 
 const CHAVE = 'usuarios_portfolio';
 
+function supabaseUrlBase() {
+    // Remove "/rest/v1", "/" do final e espaços, para a URL ficar sempre no padrão certo.
+    try {
+        return new URL(SUPABASE_URL.trim()).origin;
+    } catch (err) {
+        return '';
+    }
+}
+
 function supabaseClient() {
-    if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined'
-        && SUPABASE_URL && SUPABASE_ANON_KEY) {
-        return supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var url = supabaseUrlBase();
+    if (typeof SUPABASE_ANON_KEY !== 'undefined' && url && SUPABASE_ANON_KEY.trim()) {
+        return supabase.createClient(url, SUPABASE_ANON_KEY.trim());
     }
     return null;
 }

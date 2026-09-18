@@ -7,7 +7,9 @@
 //   3. Aguarde terminar de criar.
 //   4. No menu da esquerda: Settings (engrenagem) > API
 //   5. Copie o "Project URL" e cole em SUPABASE_URL abaixo
-//   6. Copie a "anon public key" e cole em SUPABASE_ANON_KEY abaixo
+//      (formato: https://seu-projeto.supabase.co — SEM /rest/v1/ no final)
+//   6. Copie a chave de API (anon public key "eyJ..." ou publishable key "sb_publishable_...")
+//      e cole em SUPABASE_ANON_KEY abaixo
 //   7. Rode o script SQL de dentro deste repositório (arquivo "supabase.sql"):
 //        No painel do Supabase: SQL Editor > clicar no arquivo "supabase.sql"
 //        que você deu upload/colou lá > Run.
@@ -16,7 +18,7 @@
 //   9. Salve o arquivo e suba tudo no GitHub. Pronto!
 // ============================================================
 
-const SUPABASE_URL = 'https://phphefrsgvuayeczgctx.supabase.co/rest/v1/';
+const SUPABASE_URL = 'https://phphefrsgvuayeczgctx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_BV411PnUVarbyWTt2h86UA_ml0FK1rh';
 
 // Nome do bucket (pasta) criado no Storage para guardar as imagens.
