@@ -23,3 +23,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_BV411PnUVarbyWTt2h86UA_ml0FK1rh';
 
 // Nome do bucket (pasta) criado no Storage para guardar as imagens.
 const SUPABASE_BUCKET = 'atividades';
+
+// Única conta que pode ADICIONAR atividades. As outras contas (ex.: professor)
+// conseguem ver o portfólio, mas não têm o formulário de adicionar.
+const EMAIL_ADMIN = 'aluno@gmail.com';

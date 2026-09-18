@@ -35,6 +35,16 @@ function salvarUsuarios(lista) {
     localStorage.setItem(CHAVE, JSON.stringify(lista));
 }
 
+// Guarda quem entrou, para as páginas saberem se podem mostrar o formulário de adicionar.
+function registrarLogin(nome, email) {
+    try {
+        localStorage.setItem('usuario_logado', email);
+        localStorage.setItem('usuario_logado_nome', nome || '');
+    } catch (err) {
+        // sem localStorage, segue o jogo
+    }
+}
+
 async function logar() {
     var email = document.getElementById("login").value.trim();
     var senha = document.getElementById("senha").value;
@@ -54,6 +64,7 @@ async function logar() {
         });
 
         if (usuario) {
+            registrarLogin(usuario.nome, usuario.email);
             alert("Login realizado com sucesso!");
             window.location.href = "indexx.html";
         } else {
@@ -73,6 +84,7 @@ async function logar() {
         if (resultado.error) throw resultado.error;
 
         if (resultado.data) {
+            registrarLogin(resultado.data.nome, resultado.data.email);
             alert("Login realizado com sucesso!");
             window.location.href = "indexx.html";
         } else {

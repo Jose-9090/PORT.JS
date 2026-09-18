@@ -30,6 +30,21 @@ try {
     console.error('Supabase não configurado ainda:', err.message);
 }
 
+// ---------- Permissão: só a conta do aluno pode adicionar ----------
+
+function emailLogado() {
+    try {
+        return (localStorage.getItem('usuario_logado') || '').trim().toLowerCase();
+    } catch (err) {
+        return '';
+    }
+}
+
+function podeAdicionarAtividade() {
+    return typeof EMAIL_ADMIN !== 'undefined'
+        && emailLogado() === EMAIL_ADMIN.trim().toLowerCase();
+}
+
 // ---------- Funções auxiliares ----------
 
 function adicionarFigura(pagina, eixo, nome, imagem) {
@@ -125,6 +140,11 @@ async function carregarAtividadesSalvas(pagina) {
 }
 
 async function adicionarAtividade(pagina) {
+    if (!podeAdicionarAtividade()) {
+        alert('Somente a conta do aluno (' + EMAIL_ADMIN + ') pode adicionar atividades.');
+        return;
+    }
+
     var eixo = document.getElementById('eixoAtividade-' + pagina).value;
     var nome = document.getElementById('nomeAtividade-' + pagina).value;
     var arquivo = document.getElementById('arquivoAtividade-' + pagina).files[0];
@@ -201,7 +221,15 @@ async function migrarAtividadesLocais(pagina) {
     }
 }
 
+function aplicarPermissao() {
+    var form = document.querySelector('.forma');
+    if (!form) return;
+    // Esconde o formulário de adicionar para quem não é a conta do aluno (ex.: professor).
+    form.style.display = podeAdicionarAtividade() ? '' : 'none';
+}
+
 async function inicializarPagina(pagina) {
+    aplicarPermissao();
     await carregarAtividadesSalvas(pagina);
     await migrarAtividadesLocais(pagina);
 }
