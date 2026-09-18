@@ -98,53 +98,11 @@
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase-config.js"></script>
+    <script src="./atividades.js"></script>
     <script>
-        function carregarAtividadesSalvas(pagina) {
-            var chave = 'atividades_' + pagina;
-            var salvos = localStorage.getItem(chave);
-            if (!salvos) return;
-            try {
-                var atividades = JSON.parse(salvos);
-                for (var i = 0; i < atividades.length; i++) {
-                    var container = document.getElementById(atividades[i].eixo + '-' + pagina);
-                    if (container) {
-                        var figure = document.createElement('figure');
-                        figure.innerHTML = '<img src="' + atividades[i].imagem + '" class="rotacionar"><figcaption>' + atividades[i].nome + '</figcaption>';
-                        container.appendChild(figure);
-                    }
-                }
-            } catch (err) {}
-        }
-
-        function adicionarAtividade(pagina) {
-            var eixo = document.getElementById('eixoAtividade-' + pagina).value;
-            var nome = document.getElementById('nomeAtividade-' + pagina).value;
-            var arquivo = document.getElementById('arquivoAtividade-' + pagina).files[0];
-            
-            if (!nome || !arquivo) {
-                alert('Preencha o nome e selecione uma imagem!');
-                return;
-            }
-            
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var container = document.getElementById(eixo + '-' + pagina);
-                var figure = document.createElement('figure');
-                figure.innerHTML = '<img src="' + e.target.result + '" class="rotacionar"><figcaption>' + nome + '</figcaption>';
-                container.appendChild(figure);
-                
-                var chave = 'atividades_' + pagina;
-                var salvos = JSON.parse(localStorage.getItem(chave) || '[]');
-                salvos.push({ eixo: eixo, nome: nome, imagem: e.target.result });
-                localStorage.setItem(chave, JSON.stringify(salvos));
-                
-                document.getElementById('nomeAtividade-' + pagina).value = '';
-                document.getElementById('arquivoAtividade-' + pagina).value = '';
-            };
-            reader.readAsDataURL(arquivo);
-        }
-
-        carregarAtividadesSalvas('hum');
+        inicializarPagina('hum');
     </script>
     
 </body>

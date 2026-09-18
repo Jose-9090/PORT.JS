@@ -1,6 +1,18 @@
-// Login e cadastro salvos no navegador (localStorage).
-// Funciona no GitHub Pages, sem precisar de servidor nem banco externo.
+// ============================================================
+//  LOGIN/CADASTRO NA NUVEM (Supabase)
+//  Se o Supabase ainda não estiver configurado, usa o salvamento
+//  local no navegador (comportamento antigo).
+// ============================================================
+
 const CHAVE = 'usuarios_portfolio';
+
+function supabaseClient() {
+    if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined'
+        && SUPABASE_URL && SUPABASE_ANON_KEY) {
+        return supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+    return null;
+}
 
 function obterUsuarios() {
     try {
@@ -23,16 +35,43 @@ async function logar() {
         return;
     }
 
-    var usuarios = obterUsuarios();
-    var usuario = usuarios.find(function (u) {
-        return u.email === email && u.senha === senha;
-    });
+    var banco = supabaseClient();
 
-    if (usuario) {
-        alert("Login realizado com sucesso!");
-        window.location.href = "indexx.html";
-    } else {
-        alert("E-mail ou senha inválidos!");
+    // Sem Supabase configurado: usa o navegador
+    if (!banco) {
+        var usuarios = obterUsuarios();
+        var usuario = usuarios.find(function (u) {
+            return u.email === email && u.senha === senha;
+        });
+
+        if (usuario) {
+            alert("Login realizado com sucesso!");
+            window.location.href = "indexx.html";
+        } else {
+            alert("E-mail ou senha inválidos!");
+        }
+        return;
+    }
+
+    try {
+        var resultado = await banco
+            .from('usuarios')
+            .select('nome, email')
+            .eq('email', email)
+            .eq('senha', senha)
+            .maybeSingle();
+
+        if (resultado.error) throw resultado.error;
+
+        if (resultado.data) {
+            alert("Login realizado com sucesso!");
+            window.location.href = "indexx.html";
+        } else {
+            alert("E-mail ou senha inválidos!");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao entrar: " + err.message);
     }
 }
 
@@ -46,25 +85,61 @@ async function cadastrar() {
         return;
     }
 
-    var usuarios = obterUsuarios();
+    var banco = supabaseClient();
 
-    var jaExiste = usuarios.some(function (u) {
-        return u.email === email;
-    });
+    // Sem Supabase configurado: usa o navegador
+    if (!banco) {
+        var usuarios = obterUsuarios();
 
-    if (jaExiste) {
-        alert("Este e-mail já está cadastrado!");
+        var jaExiste = usuarios.some(function (u) {
+            return u.email === email;
+        });
+
+        if (jaExiste) {
+            alert("Este e-mail já está cadastrado!");
+            return;
+        }
+
+        usuarios.push({ nome: nome, email: email, senha: senha });
+        salvarUsuarios(usuarios);
+
+        alert("Cadastro realizado com sucesso! Faça login.");
+        document.getElementById("cadNome").value = "";
+        document.getElementById("cadEmail").value = "";
+        document.getElementById("cadSenha").value = "";
+        fecharCadastro();
         return;
     }
 
-    usuarios.push({ nome: nome, email: email, senha: senha });
-    salvarUsuarios(usuarios);
+    try {
+        var existe = await banco
+            .from('usuarios')
+            .select('id')
+            .eq('email', email)
+            .maybeSingle();
 
-    alert("Cadastro realizado com sucesso! Faça login.");
-    document.getElementById("cadNome").value = "";
-    document.getElementById("cadEmail").value = "";
-    document.getElementById("cadSenha").value = "";
-    fecharCadastro();
+        if (existe.error) throw existe.error;
+
+        if (existe.data) {
+            alert("Este e-mail já está cadastrado!");
+            return;
+        }
+
+        var inserir = await banco
+            .from('usuarios')
+            .insert({ nome: nome, email: email, senha: senha });
+
+        if (inserir.error) throw inserir.error;
+
+        alert("Cadastro realizado com sucesso! Faça login.");
+        document.getElementById("cadNome").value = "";
+        document.getElementById("cadEmail").value = "";
+        document.getElementById("cadSenha").value = "";
+        fecharCadastro();
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao cadastrar: " + err.message);
+    }
 }
 
 function cancelar() {
