@@ -202,3 +202,120 @@ input[type="button"] {
 .modal-overlay.active .modal-card {
     transform: scale(1);
 }
+
+/* ===== Abajur da tela de login ===== */
+#loginCard {
+    position: relative;
+    z-index: 2;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(18px) scale(0.92);
+
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+}
+
+#loginCard.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.lamp-cena {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -52%);
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    pointer-events: auto;
+    user-select: none;
+}
+
+.lamp-svg {
+    width: 200px;
+    height: auto;
+    display: block;
+}
+
+.lamp-shade {
+    transition: fill 0.5s ease, filter 0.5s ease;
+}
+
+.lamp-bulb {
+    fill: #fff3e0;
+    transition: fill 0.5s ease;
+}
+
+.lamp-cena.ligada .lamp-shade {
+    fill: #3a2408;
+    filter: drop-shadow(0 0 14px #ff8c00);
+}
+
+.lamp-cena.ligada .lamp-bulb {
+    fill: #ffd166;
+    filter: drop-shadow(0 0 10px #ffd166);
+}
+
+.cordao-grupo {
+    transform-origin: 0 0;
+    transition: transform 0.25s ease;
+}
+
+.lamp-cena.puxando .cordao-grupo {
+    transform: translateY(28px);
+}
+
+.lamp-puxador {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.lamp-puxador:hover {
+    transform: scale(1.15);
+}
+
+.lamp-glow {
+    position: absolute;
+    top: -190px;
+    left: -260px;
+    width: 520px;
+    height: 520px;
+
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(255, 140, 0, 0.28) 0%,
+            rgba(255, 140, 0, 0.06) 45%,
+            transparent 70%);
+
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 1s ease, transform 1s ease;
+
+    pointer-events: none;
+}
+
+.lamp-cena.ligada .lamp-glow {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.lamp-dica {
+    position: absolute;
+    bottom: -38px;
+
+    color: #888;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    transition: opacity 0.4s ease;
+}
+
+.lamp-cena.ligada .lamp-dica {
+    opacity: 0;
+}

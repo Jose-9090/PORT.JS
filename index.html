@@ -9,6 +9,23 @@
 </head>
 
 <body>
+    <div class="lamp-cena" id="lampCena">
+        <div class="lamp-glow"></div>
+        <svg class="lamp-svg" viewBox="0 0 180 300">
+            <ellipse cx="90" cy="272" rx="50" ry="10" fill="#1a1a1a" />
+            <rect x="70" y="250" width="40" height="16" rx="4" fill="#1a1a1a" />
+            <path d="M85 95 L85 250" stroke="#2a2a2a" stroke-width="5" />
+            <path class="lamp-shade" d="M15 95 L75 40 H105 L165 95 Z" fill="#121212" stroke="#ff8c00" stroke-width="3" />
+            <line x1="90" y1="40" x2="90" y2="28" stroke="#ff8c00" stroke-width="3" />
+            <circle cx="90" cy="24" r="4" fill="#ff8c00" />
+            <circle class="lamp-bulb" cx="90" cy="112" r="9" fill="#fff3e0" />
+            <g class="cordao-grupo">
+                <path d="M0 0 C -12 34, -9 86, -2 124" stroke="#3a3a3a" stroke-width="3" fill="none" />
+                <circle class="lamp-puxador" id="puxador" cx="-2" cy="136" r="9" fill="#ff8c00" />
+            </g>
+        </svg>
+        <p class="lamp-dica">puxe o cordão para acender</p>
+    </div>
     <div class="center" id="loginCard">
         <h1>Login</h1>
         <form onsubmit="logar(); return false;">
