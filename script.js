@@ -10,6 +10,27 @@
         var scrollMaxDigitacao = 220;
         var bootMostrado = false;
         var progressoMaximo = 0;
+        var ctxTecla = null;
+
+        function tocarTecla() {
+            try {
+                if (!ctxTecla) {
+                    ctxTecla = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (ctxTecla.state === 'suspended') ctxTecla.resume();
+                var t = ctxTecla.currentTime;
+                var osc = ctxTecla.createOscillator();
+                var ganho = ctxTecla.createGain();
+                osc.type = 'square';
+                osc.frequency.value = 220 + Math.random() * 90;
+                ganho.gain.setValueAtTime(0.04, t);
+                ganho.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+                osc.connect(ganho);
+                ganho.connect(ctxTecla.destination);
+                osc.start(t);
+                osc.stop(t + 0.07);
+            } catch (e) {}
+        }
 
         function digitarNoScroll() {
             var el = document.getElementById('typedText');
@@ -18,7 +39,11 @@
             var y = Math.max(0, Math.min(window.scrollY, scrollMaxDigitacao));
             var n = Math.round((y / scrollMaxDigitacao) * codigoComando.length);
 
-            if (n > progressoMaximo) progressoMaximo = n;
+            if (n > progressoMaximo) {
+                var novas = n - progressoMaximo;
+                for (var i = 0; i < Math.min(novas, 4); i++) tocarTecla();
+                progressoMaximo = n;
+            }
 
             el.textContent = codigoComando.slice(0, progressoMaximo);
 
