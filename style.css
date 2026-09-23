@@ -1418,3 +1418,75 @@ body.loaded footer { animation-delay: 0.7s; }
         height: 110px;
     }
 }
+
+/* ===== Dragãozinho esqueleto que segue o mouse ===== */
+.dragon-cursor {
+    position: fixed;
+    left: -23px;
+    top: -19px;
+    width: 46px;
+    height: 38px;
+    z-index: 9999;
+    pointer-events: none;
+    color: var(--text);
+
+    filter: drop-shadow(0 0 3px rgba(255, 107, 0, 0.55));
+}
+
+.dragon-cursor .dragon-move {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.dragon-cursor .dragon-move svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.dragon-cursor .flame {
+    position: absolute;
+    left: 0;
+    top: 5px;
+
+    width: 28px;
+    height: 13px;
+
+    transform-origin: right center;
+    background: radial-gradient(circle at right,
+            #ff6b00 0%,
+            #ffd166 60%,
+            transparent 80%);
+    border-radius: 50%;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dragon-cursor.roar .dragon-move svg {
+    animation: dragSquish 0.3s ease;
+}
+
+.dragon-cursor.roar .flame {
+    animation: dragFlame 0.32s ease-out forwards;
+}
+
+@keyframes dragSquish {
+    0% { transform: scale(1, 1); }
+    30% { transform: scale(0.8, 0.55); }
+    60% { transform: scale(1.08, 1.2); }
+    100% { transform: scale(1, 1); }
+}
+
+@keyframes dragFlame {
+    0% {
+        opacity: 0;
+        transform: translateX(0) scaleX(0.2);
+    }
+    25% { opacity: 1; }
+    100% {
+        opacity: 0;
+        transform: translateX(-34px) scaleX(1.6);
+    }
+}
