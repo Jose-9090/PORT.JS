@@ -11,17 +11,51 @@
 <body>
     <div class="lamp-cena" id="lampCena">
         <div class="lamp-glow"></div>
-        <svg class="lamp-svg" viewBox="0 0 180 300">
-            <ellipse cx="90" cy="272" rx="50" ry="10" fill="#1a1a1a" />
-            <rect x="70" y="250" width="40" height="16" rx="4" fill="#1a1a1a" />
-            <path d="M85 95 L85 250" stroke="#2a2a2a" stroke-width="5" />
-            <path class="lamp-shade" d="M15 95 L75 40 H105 L165 95 Z" fill="#121212" stroke="#ff8c00" stroke-width="3" />
-            <line x1="90" y1="40" x2="90" y2="28" stroke="#ff8c00" stroke-width="3" />
-            <circle cx="90" cy="24" r="4" fill="#ff8c00" />
-            <circle class="lamp-bulb" cx="90" cy="112" r="9" fill="#fff3e0" />
-            <g class="cordao-grupo">
-                <path d="M0 0 C -12 34, -9 86, -2 124" stroke="#3a3a3a" stroke-width="3" fill="none" />
-                <circle class="lamp-puxador" id="puxador" cx="-2" cy="136" r="9" fill="#ff8c00" />
+        <svg class="lamp-svg" viewBox="0 0 220 350">
+            <defs>
+                <linearGradient id="gShade" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#3a1e06" />
+                    <stop offset="0.55" stop-color="#1c0e04" />
+                    <stop offset="1" stop-color="#0f0803" />
+                </linearGradient>
+                <linearGradient id="gStem" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#2b2b2b" />
+                    <stop offset="0.5" stop-color="#4a4a4a" />
+                    <stop offset="1" stop-color="#222222" />
+                </linearGradient>
+                <radialGradient id="gBulb" cx="0.5" cy="0.5" r="0.5">
+                    <stop offset="0" stop-color="#fff8d6" />
+                    <stop offset="1" stop-color="#d9b86a" />
+                </radialGradient>
+            </defs>
+
+            <ellipse cx="110" cy="340" rx="66" ry="12" fill="#181818" stroke="#ff8c00" stroke-width="1.5" />
+            <ellipse cx="110" cy="336" rx="46" ry="8" fill="#262626" />
+            <path d="M98 300 H122 L132 336 H88 Z" fill="#1f1f1f" stroke="#ff8c00" stroke-width="1" />
+            <rect x="104" y="120" width="12" height="182" rx="6" fill="url(#gStem)" />
+            <rect x="108" y="120" width="3" height="182" rx="1.5" fill="#555555" opacity="0.5" />
+
+            <ellipse cx="110" cy="62" rx="21" ry="5" fill="#120802" stroke="#ff8c00" stroke-width="1" opacity="0.9" />
+            <path class="lamp-shade" d="M89 62 L31 118 Q110 132 189 118 L131 62 Z" fill="url(#gShade)" stroke="#ff8c00"
+                stroke-width="1.5" />
+            <path d="M38 118 Q110 131 182 118" stroke="#ff8c00" stroke-width="2.5" fill="none" />
+            <path d="M89 62 L31 118 L38 118 L96 62 Z" fill="#ffffff" opacity="0.03" />
+            <circle class="lamp-bulb" cx="110" cy="126" r="11" fill="url(#gBulb)" stroke="#c99a3a" stroke-width="1" />
+
+            <path d="M110 40 L110 24 M110 24 H104" stroke="#ff8c00" stroke-width="3" stroke-linecap="round" fill="none" />
+            <circle cx="110" cy="22" r="5" fill="#ff8c00" />
+
+            <g class="cordao-grupo" id="cordao">
+                <path d="M183 116 C 200 150, 194 210, 187 258" stroke="#3a3a3a" stroke-width="2.5" fill="none" />
+                <circle cx="182" cy="138" r="2" fill="#555555" />
+                <circle cx="186" cy="164" r="2" fill="#555555" />
+                <circle cx="188" cy="190" r="2" fill="#555555" />
+                <circle cx="188" cy="216" r="2" fill="#555555" />
+                <circle cx="187" cy="240" r="2" fill="#555555" />
+                <path d="M187 258 v6" stroke="#3a3a3a" stroke-width="2.5" />
+                <circle class="lamp-puxador" cx="187" cy="268" r="12" fill="#ff8c00" stroke="#7a4100"
+                    stroke-width="1" />
+                <circle class="lamp-hit" cx="187" cy="268" r="22" fill="#ff8c00" opacity="0" />
             </g>
         </svg>
         <p class="lamp-dica">puxe o cordão para acender</p>

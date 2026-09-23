@@ -227,7 +227,7 @@ migrarUsuariosLocais();
 // ============================================================
 (function () {
     var lampCena = document.getElementById('lampCena');
-    var puxador = document.getElementById('puxador');
+    var puxador = document.getElementById('cordao');
     var loginCard = document.getElementById('loginCard');
     if (!lampCena || !puxador || !loginCard) return;
 
