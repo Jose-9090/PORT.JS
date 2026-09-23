@@ -111,7 +111,7 @@ app.post('/api/cadastro', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Servidor do portfólio online!');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Diagnóstico do banco. Acesse /api/status para ver se o MySQL responde.
