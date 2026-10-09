@@ -10,7 +10,7 @@
     <link rel="icon" href="./img.index/gogo.jpg" type="image/x-icon">
 </head>
 
-<body class="loading">
+<body class="loading" data-mode="plan">
     <div class="curtain" id="curtain">
 <div class="curtain-center">
                 <div class="curtain-logo">
@@ -217,6 +217,19 @@
         <p class="org">Orientadores: Cleiton Jericó &amp; Regiane Leal</p>
         <p class="org2"><strong>© 2026 José: Js Developer</strong></p>
     </footer>
+
+    <div class="prompt-status">
+        <button type="button" class="ps-btn ps-mode" onclick="alternarModo()">
+            <span class="ps-label" id="psModeName">Plan</span>
+        </button>
+        <span class="ps-sep" aria-hidden="true">&middot;</span>
+        <button type="button" class="ps-btn ps-model">
+            <span style="color: #ffff;" class="ps-label">Big Pickle</span>
+        </button>
+        <button type="button" class="ps-btn ps-model">
+            <span class="ps-label">OpenCode Zen</span>
+        </button>
+    </div>
 
     <div class="assistant" id="assistant">
         <div class="assistant-launcher" id="assistantLauncher" onclick="alternarAssistente()">

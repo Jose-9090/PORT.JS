@@ -114,6 +114,17 @@
             if (navbar) navbar.classList.toggle('nav-open');
         }
 
+        function definirModo(modo) {
+            document.body.setAttribute('data-mode', modo);
+            var nome = document.getElementById('psModeName');
+            if (nome) nome.textContent = (modo === 'build') ? 'Build' : 'Plan';
+        }
+
+        function alternarModo() {
+            var atual = document.body.getAttribute('data-mode');
+            definirModo(atual === 'build' ? 'plan' : 'build');
+        }
+
         (function () {
             var links = document.querySelectorAll('.nav-links a');
             for (var i = 0; i < links.length; i++) {

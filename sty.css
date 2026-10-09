@@ -1,17 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/acknowledge');
+
+/* =========================================================
+   OPENCODE THEME — login / cadastro
+   ========================================================= */
+:root {
+    --bg: #0c0c0e;
+    --surface: #161618;
+    --elevated: #1c1c1f;
+    --border: #38383a;
+    --border-muted: #2c2c2e;
+
+    --text: #ffffff;
+    --text-secondary: #c7c7cc;
+    --text-muted: #a1a1a6;
+    --text-disabled: #86868b;
+
+    /* MODO PLAN — laranja opencode */
+    --accent: #fab283;
+    --accent-hover: #ffcfa6;
+    --accent-deep: #e0793a;
+    --accent-soft: rgba(250, 178, 131, 0.12);
+    --success: #30d158;
+
+    --r-lg: 8px;
+    --r-md: 5px;
+    --r-sm: 3px;
+
+    --font: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        'Liberation Mono', 'Courier New', monospace;
+    --font-title: 'Acknowledge TT (BRK)', sans-serif;
+
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font);
 }
 
 body {
-    /* Fundo totalmente preto */
-    background-color: #000000; 
-    /* Letras brancas por padrão */
-    color: #ffffff; 
+    background-color: var(--bg);
+    color: var(--text);
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -19,158 +51,213 @@ body {
 }
 
 .center {
-    width: 400px;
-    /* Fundo levemente mais claro que o body para destacar a caixa */
-    background: #121212; 
-    border-radius: 10px;
-    padding: 40px;
-    /* Borda superior laranja e sombra sutil */
-    border-top: 5px solid #ff8c00; 
-    box-shadow: 0 10px 25px rgba(255, 140, 0, 0.15);
+    width: min(520px, calc(100% - 40px));
+
+    background: var(--surface);
+    border: none;
+    border-left: 4px solid var(--accent);
+    border-radius: 0;
+
+    padding: 34px 34px 30px;
+
+    box-shadow: var(--shadow);
 }
 
 .center h1 {
     text-align: center;
-    padding: 0 0 20px 0;
-    border-bottom: 1px solid #333333;
-    color: #ffffff; /* Letras brancas */
+    padding: 0 0 18px 0;
+    margin-bottom: 6px;
+
+    color: var(--text);
+    font-family: var(--font-title);
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
 }
 
 .center form {
-    padding: 0 20px;
+    padding: 0;
     box-sizing: border-box;
-    margin-top: 30px;
+    margin-top: 26px;
 }
 
 .txt_field {
     position: relative;
-    border-bottom: 2px solid #555555;
-    margin: 30px 0;
+    border-bottom: 1px solid var(--border);
+    margin: 26px 0;
+    transition: border-color 0.2s;
 }
 
 .txt_field input {
     width: 100%;
     padding: 0 5px;
     height: 40px;
-    font-size: 16px;
+    font-size: 15px;
+
     border: none;
     background: none;
     outline: none;
-    color: #ffffff; /* Letras brancas dentro do input */
+
+    color: var(--text);
+    caret-color: var(--accent);
 }
 
 .txt_field label {
     position: absolute;
     top: 50%;
     left: 5px;
-    color: #aaaaaa;
+
+    color: var(--text-disabled);
+    font-family: var(--font);
+    font-size: 14px;
+
     transform: translateY(-50%);
-    font-size: 16px;
     pointer-events: none;
-    transition: 0.3s ease;
+    transition: 0.25s ease;
 }
 
-/* Efeito da linha laranja e label subindo quando clica ou digita */
 .txt_field input:focus ~ label,
 .txt_field input:valid ~ label {
-    top: -5px;
-    color: #ff8c00; /* Laranja */
-    font-size: 13px;
+    top: -12px;
+    color: var(--accent);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
-.txt_field input:focus {
-    border-bottom: 2px solid #ff8c00; /* Linha inferior fica laranja */
+.txt_field:focus-within {
+    border-color: var(--accent);
 }
 
-/* Remove a "barra branca" do auto-preenchimento do navegador */
 .txt_field input,
 .txt_field input:focus {
-    color: #ffffff; /* Letras brancas */
+    color: var(--text);
     background: transparent;
-    -webkit-text-fill-color: #ffffff; /* Texto branco no autofill */
+    -webkit-text-fill-color: var(--text);
 }
 
 .txt_field input:-webkit-autofill,
 .txt_field input:-webkit-autofill:hover,
 .txt_field input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px #121212 inset; /* Fundo escuro no autofill */
-    -webkit-text-fill-color: #ffffff; /* Texto branco */
+    -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+    -webkit-text-fill-color: var(--text);
     background: transparent;
     transition: background-color 5000s ease-in-out 0s;
 }
 
 .pass {
-    margin: -5px 0 25px 5px;
-    color: #aaaaaa;
+    margin: -8px 0 24px 5px;
+    color: var(--text-disabled);
     cursor: pointer;
-    font-size: 14px;
-    transition: 0.3s;
+    font-family: var(--font);
+    font-size: 13px;
+    transition: 0.2s;
 }
 
 .pass:hover {
-    color: #ff8c00; /* Laranja no hover */
-    text-decoration: underline;
+    color: var(--accent);
 }
 
 .botoes {
     display: flex;
     justify-content: space-between;
-    gap: 15px;
+    gap: 12px;
 }
 
-/* Estilo base para os botões */
 input[type="submit"],
 input[type="button"] {
     width: 100%;
-    height: 45px;
-    border: 2px solid #ff8c00; /* Borda laranja */
-    border-radius: 25px;
-    font-size: 16px;
+    height: 44px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+
+    font-family: var(--font);
+    font-size: 14px;
     font-weight: 600;
+    letter-spacing: 0.02em;
+
     cursor: pointer;
     outline: none;
-    transition: 0.3s;
+
+    transition: 0.2s;
 }
 
-/* Botão Conectar (Preenchido) */
 .btn-conectar {
-    background: #ff8c00; /* Laranja */
-    color: #ffffff; /* Letras brancas */
-}
-
-.btn-conectar:hover {
-    background: #e07b00; /* Laranja mais escuro no hover */
-    border-color: #e07b00;
-}
-
-/* Botão Cancelar (Vazado/Outline) */
-.btn-cancelar {
-    background: transparent; /* Fundo transparente (preto do container) */
-    color: #ffffff; /* Letras brancas */
-}
-
-.btn-cancelar:hover {
-    background: #ff8c00; /* Preenche de laranja no hover */
+    background: var(--accent);
+    border-color: var(--accent);
     color: #ffffff;
 }
 
+.btn-conectar:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+.btn-cancelar {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.btn-cancelar:hover {
+    background: var(--elevated);
+    border-color: var(--border);
+    color: var(--text);
+}
+
 .signup_link {
-    margin: 30px 0 10px 0;
+    margin: 26px 0 6px 0;
     text-align: center;
-    font-size: 14px;
-    color: #aaaaaa;
+    font-family: var(--font);
+    font-size: 13px;
+    color: var(--text-disabled);
 }
 
 .signup_link a {
-    color: #ff8c00; /* Link laranja */
+    color: var(--accent);
     text-decoration: none;
     font-weight: 600;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 
 .signup_link a:hover {
-    text-decoration: underline;
-    color: #e07b00;
+    color: var(--text);
+}
+
+/* Barra inferior da caixa — estilo opencode (modo + modelo) */
+.prompt-status {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 2px;
+
+    margin: 26px -34px -30px;
+    padding: 12px 14px;
+
+    border-top: 1px solid var(--border-muted);
+}
+
+.prompt-status .ps-mode,
+.prompt-status .ps-label {
+    font-family: var(--font);
+    font-size: 15px;
+    letter-spacing: 0.03em;
+
+    padding: 4px 8px;
+}
+
+.prompt-status .ps-label {
+    color: var(--text-muted);
+}
+
+.prompt-status .ps-mode {
+    color: var(--accent);
+}
+
+.prompt-status .ps-sep {
+    color: var(--border);
+    padding: 0 2px;
 }
 
 .modal-overlay {
@@ -179,10 +266,14 @@ input[type="button"] {
     left: 0;
     width: 100%;
     height: 100%;
+
     background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+
     display: flex;
     justify-content: center;
     align-items: center;
+
     opacity: 0;
     visibility: hidden;
     transition: 0.3s;
@@ -195,7 +286,7 @@ input[type="button"] {
 }
 
 .modal-card {
-    transform: scale(0.8);
+    transform: scale(0.96);
     transition: 0.3s;
 }
 
