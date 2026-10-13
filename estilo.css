@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 @import url('https://fonts.cdnfonts.com/css/acknowledge');
+@import url('https://fonts.cdnfonts.com/css/square-dance');
 
 /* =========================================================
    OPENCODE THEME — subpáginas do portfólio
@@ -451,6 +452,12 @@ header h2,
 .identificacao h2 {
     font-family: var(--font-title);
     font-weight: 400;
+}
+
+/* Cabeçalhos de EIXO — SquareDance00 em negrito */
+main section > h3 {
+    font-family: 'SquareDance00', sans-serif;
+    font-weight: bold;
 }
 
 /* ===== Responsividade ===== */

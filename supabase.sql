@@ -1,10 +1,4 @@
--- ============================================================
---  EXECUTE ESTE SCRIPT NO SUPABASE
---  Painel do Supabase > SQL Editor > New query > cole tudo > Run
---  Pode rodar quantas vezes quiser (não apaga dados).
--- ============================================================
 
--- ---------- TABELAS ----------
 create table if not exists public.atividades (
     id bigint generated always as identity primary key,
     pagina text not null,
@@ -21,9 +15,6 @@ create table if not exists public.usuarios (
     senha text not null,
     created_at timestamptz not null default now()
 );
-
--- ---------- PERMISSÕES (ROW LEVEL SECURITY) ----------
--- Permitir que o site (chave pública/anon) leia e escreva nessas tabelas.
 alter table public.usuarios enable row level security;
 alter table public.atividades enable row level security;
 
