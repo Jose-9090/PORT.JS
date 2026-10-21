@@ -139,7 +139,7 @@ const FRONT_END = path.join(__dirname, '..', 'front-end');
 |-------|-------|--------|
 | `app.get('/')` | `path.join(__dirname, 'index.html')` | `path.join(FRONT_END, 'index.html')` |
 | `app.use(express.static(...))` | `path.join(__dirname)` | `FRONT_END` |
-| `BLOQUEADOS` | `['/node_modules', '/server.js', '/package.json', '/package-lock.json', '/login2.sql', '/.git', '/.env']` | manter a lista (comentário atualizado: agora é redundante, pois a raiz estática é `front-end/`, mas continua como rede de segurança) |
+| `BLOQUEADOS` | `['/node_modules', '/server.js', '/package.json', '/package-lock.json', '/login2.sql', '/.git', '/.env']` | manter a lista e **acrescentar `'/back-end'`** (defesa em profundidade: a raiz estática passa a ser `front-end/`, então `/back-end/…` cairia em 404 de qualquer forma); atualizar o comentário para dizer que a lista agora é redundante, mas continua como rede de segurança |
 
 **Inalterado:** pool MySQL (`mysql2.createPool`), `CRIA_TABELA`, verificação de conexão,
 `/api/login`, `/api/cadastro`, `/api/status`, `PORT`/listen.
@@ -233,11 +233,24 @@ porta 5501), como configurar o MySQL (variáveis `DB_*`) e onde ficam os schemas
 
 ### 7.1 Verificação estática
 
-- Nenhum HTML referencia `sty.css`, `style.css`, `estilo.css`, `scri.js`, `script.js`,
-  `atividades.js` ou `supabase-config.js` por caminho antigo.
-- Nenhum HTML referencia `./img/`, `./img.index/`, `./ling/`, `./hum/`, `./mate/`, `./nut/`.
-- Todo arquivo referenciado existe no novo caminho.
-- `git status` mostra renomeações detectáveis, não exclusões+criações.
+A verificação estática é automatizada por um script **sem dependências**,
+`scripts/verificar-caminhos.js` (rodável com `npm run verificar`), que varre os `.html` e `.js`
+do front-end, extrai todas as referências locais (`src`, `href` e `location.href`), resolve cada
+uma contra o disco e falha com código de saída 1 se alguma não resolver. Ele roda tanto no layout
+antigo (raiz) quanto no novo (`front-end/`), servindo de baseline antes e depois da mudança.
+
+Regras do script:
+
+- Query string e hash são removidos antes de resolver (`./atividades.js?v=3` → `./atividades.js`).
+- Referências externas (`http://`, `https://`, `data:`, `//`, `#âncora`, `mailto:`, `tel:`) são
+  ignoradas.
+- A base de resolução é o diretório do próprio `.html`; para arquivos `.js`, é a raiz do front-end
+  (as páginas moram na raiz, não em `js/`).
+- Um `.html` que nenhuma referência aponta (órfão, como `responsivo.html`) é **warning**, nunca
+  falha.
+
+Baseline medido no layout atual: **76 ocorrências** de referência local, **63 distintas**,
+**1 ausente** (`anex.html -> ./anexos.css`, o bug pré-existente da seção 5.3).
 
 ### 7.2 Verificação do servidor
 
@@ -252,7 +265,8 @@ Com `npm start` rodando na raiz:
 | `GET /js/scri.js`, `/js/script.js`, `/js/atividades.js`, `/js/supabase-config.js` | 200 |
 | `GET /assets/img.index/image.png`, `/assets/img/…` | 200 |
 | `GET /api/status` | 200, JSON |
-| `GET /back-end/server.js` | 404 (não servido) |
+| `GET /server.js`, `GET /package.json` | 403 (lista `BLOQUEADOS` responde antes do static) |
+| `GET /back-end/server.js` | 403 (após incluir `/back-end` na lista `BLOQUEADOS`) |
 
 ### 7.3 Verificação no navegador (Playwright)
 
