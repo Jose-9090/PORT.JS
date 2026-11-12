@@ -760,6 +760,109 @@ section {
 }
 
 /* =========================================================
+   CURRÍCULO
+   ========================================================= */
+.curriculo {
+    scroll-margin-top: 200px;
+
+    width: auto;
+    margin: 44px 32px 0;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+
+    padding: 0;
+
+    transition: none;
+}
+
+.curriculo h1 {
+    font-family: var(--font);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+
+    margin: 0 0 20px;
+    padding-bottom: 0;
+}
+
+.curriculo-acoes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-curriculo {
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+
+    min-width: 220px;
+    padding: 22px 20px 18px;
+
+    background: var(--elevated);
+    border: 1px solid var(--border-muted);
+    border-radius: var(--r-md);
+
+    text-decoration: none;
+    text-align: left;
+
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.btn-curriculo:hover {
+    border-color: var(--border);
+    transform: translateY(-2px);
+}
+
+.btn-curriculo .btn-label {
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+
+    transition: color 0.2s;
+}
+
+.btn-curriculo:hover .btn-label {
+    color: var(--accent);
+}
+
+.btn-curriculo .btn-sub {
+    font-family: var(--font);
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-disabled);
+}
+
+.btn-curriculo .accent-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 2px;
+
+    background: var(--accent);
+
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s;
+}
+
+.btn-curriculo:hover .accent-line {
+    transform: scaleX(1);
+}
+
+/* =========================================================
    P.P.E — grade horária
    ========================================================= */
 .ppe-txt {
@@ -1344,6 +1447,7 @@ body.loaded footer { animation-delay: 0.7s; }
 .main-text h1,
 .areas-txt,
 .conquist h1,
+.curriculo h1,
 .ppe-txt,
 .ppe-txt h1 {
     font-family: 'SquareDance00', sans-serif;
@@ -1463,14 +1567,16 @@ body.loaded footer { animation-delay: 0.7s; }
     }
 
     .main-text,
-    .conquist {
+    .conquist,
+    .curriculo {
         width: auto;
         margin: 36px 16px 0;
         padding: 0;
     }
 
     .main-text h1,
-    .conquist h1 {
+    .conquist h1,
+    .curriculo h1 {
         font-size: 24px;
     }
 
@@ -1514,6 +1620,11 @@ body.loaded footer { animation-delay: 0.7s; }
         font-size: 10px;
         padding: 8px 4px;
         min-height: 50px;
+    }
+
+    .btn-curriculo {
+        width: 100%;
+        min-width: 0;
     }
 
     .fot {
