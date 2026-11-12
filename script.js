@@ -134,6 +134,19 @@
                 });
             }
         })();
+
+        /* densidade do vidro ao rolar */
+        (function () {
+            var navbar = document.querySelector('.navbar');
+            if (!navbar) return;
+
+            function atualizarVidro() {
+                navbar.classList.toggle('scrolled', window.scrollY > 8);
+            }
+
+            window.addEventListener('scroll', atualizarVidro, { passive: true });
+            atualizarVidro();
+        })();
         function carregarAtividadesSalvas(pagina) {
             var chave = 'atividades_' + pagina;
             var salvos = localStorage.getItem(chave);

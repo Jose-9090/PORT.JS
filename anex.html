@@ -3,21 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./anexos.css">
     <title>Anexos</title>
+    <link rel="stylesheet" href="./estilo.css">
 </head>
 <body>
-     <div class="navbar">
-        <nav>
-            <h4 class="na"><a href="#home">JOSE: Js Developer</a></h4>
-            <ul class="nav-links">
-                <li><a href="#sobre mim">Sobre mim</a></li>
-                <li><a href="#Conhecimento">A. Conhecimento</a></li>
-                <li><a href="#conq">Conquistas</a></li>
-                <li><a href="#ppe">P.P.E</a></li>
-            </ul>
-        </nav>
-    </div>
-    
+    <main>
+        <section>
+            <h1>
+                ANEXOS
+            </h1>
+            <p>
+                Esta área reúne os anexos interessantes do portfólio: materiais,
+                descobertas e conteúdos que não pertencem a uma disciplina específica,
+                mas que também fazem parte da minha formação. Guardei cada um por
+                representar aprendizado, curiosidade e evolução ao longo do curso.
+            </p>
+
+            <h3>
+                INTERESSANTES
+            </h3>
+            <div class="container" id="interessantes-anex"></div>
+
+            <div class="forma">
+                <h3>Adicionar Anexo</h3>
+                <form id="formAtividade-anex" onsubmit="return false;">
+                    <input type="hidden" id="eixoAtividade-anex" value="interessantes">
+                    <input type="text" id="nomeAtividade-anex" placeholder="Nome do anexo" required>
+                    <input type="file" id="arquivoAtividade-anex" accept="image/*" required>
+                    <button onclick="adicionarAtividade('anex')">Adicionar</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase-config.js?v=3"></script>
+    <script src="./atividades.js?v=3"></script>
+    <script>
+        inicializarPagina('anex');
+    </script>
 </body>
 </html>

@@ -165,7 +165,7 @@ h4 {
 }
 
 /* =========================================================
-   NAVBAR — barra de título do app
+   NAVBAR — vidro fosco estilo iOS (liquid glass)
    ========================================================= */
 .navbar {
     z-index: 1000;
@@ -176,12 +176,50 @@ h4 {
     width: 100%;
     height: 56px;
 
-    background: rgba(22, 22, 24, 0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-muted);
+    /* vidro: tint do accent + sheen superior + base bem translúcida */
+    background:
+        radial-gradient(120% 220% at 12% -80%, rgba(250, 178, 131, 0.08), transparent 58%),
+        linear-gradient(180deg,
+            rgba(255, 255, 255, 0.04),
+            rgba(255, 255, 255, 0.01) 55%,
+            rgba(255, 255, 255, 0)),
+        rgba(12, 12, 14, 0.30);
+
+    -webkit-backdrop-filter: blur(28px) saturate(170%);
+    backdrop-filter: blur(28px) saturate(170%);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.07),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.02),
+        0 8px 26px rgba(0, 0, 0, 0.22);
+
+    isolation: isolate;
+    transition:
+        background 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+/* ao rolar: vidro um pouco mais denso e sombra mais funda */
+.navbar.scrolled {
+    background:
+        radial-gradient(120% 220% at 12% -80%, rgba(250, 178, 131, 0.06), transparent 58%),
+        linear-gradient(180deg,
+            rgba(255, 255, 255, 0.055),
+            rgba(255, 255, 255, 0.015) 55%,
+            rgba(255, 255, 255, 0)),
+        rgba(12, 12, 14, 0.45);
+
+    border-bottom-color: rgba(255, 255, 255, 0.11);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.02),
+        0 14px 36px rgba(0, 0, 0, 0.35);
 }
 
 .navbar nav {
+    position: relative;
+    z-index: 1;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -222,11 +260,11 @@ h4 {
     justify-content: center;
     align-items: center;
 
-    gap: 6px;
+    gap: 2px;
+    padding: 0;
 
     list-style: none;
     margin: 0;
-    padding: 0;
 }
 
 .navbar li {
@@ -241,17 +279,17 @@ h4 {
     color: var(--text-muted);
     font-size: 13px;
 
-    padding: 6px 12px;
-    border: 1px solid transparent;
-    border-radius: var(--r-md);
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 999px;
 
-    transition: color 0.2s, background 0.2s, border-color 0.2s;
+    transition: color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
 .navbar .href:hover {
     color: var(--text);
-    background: var(--elevated);
-    border-color: var(--border-muted);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .nav-hamburger {
@@ -260,9 +298,10 @@ h4 {
     justify-content: center;
     gap: 5px;
 
-    background: transparent;
-    border: 1px solid var(--border-muted);
+    background: rgba(255, 255, 255, 0.06);
+    border: 0;
     border-radius: var(--r-md);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     cursor: pointer;
     padding: 8px;
 }
@@ -273,6 +312,17 @@ h4 {
     height: 2px;
     background: var(--text-secondary);
     border-radius: 2px;
+}
+
+/* fallback: navegadores sem backdrop-filter recebem vidro sólido */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .navbar {
+        background: rgba(18, 18, 20, 0.92);
+    }
+
+    .navbar.scrolled {
+        background: rgba(14, 14, 16, 0.96);
+    }
 }
 
 /* =========================================================
@@ -1337,18 +1387,34 @@ body.loaded footer { animation-delay: 0.7s; }
         right: 0;
 
         gap: 0;
+        padding: 0;
 
-        background: var(--surface);
-        border-bottom: 1px solid var(--border-muted);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+        background: rgba(12, 12, 14, 0.42);
+        -webkit-backdrop-filter: blur(28px) saturate(170%);
+        backdrop-filter: blur(28px) saturate(170%);
+
+        border: 0;
+        border-radius: 0;
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.05),
+            0 18px 40px rgba(0, 0, 0, 0.4);
 
         transform: translateY(-130%);
-        transition: transform 0.3s ease;
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
         z-index: 999;
     }
 
     .navbar.nav-open .nav-links {
         transform: translateY(0);
+        opacity: 1;
+    }
+
+    /* fallback do painel mobile sem backdrop-filter */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        .nav-links {
+            background: rgba(18, 18, 20, 0.94);
+        }
     }
 
     .nav-links li {
@@ -1359,9 +1425,8 @@ body.loaded footer { animation-delay: 0.7s; }
 
     .navbar .href {
         display: block;
-        padding: 14px;
+        padding: 15px;
         border-radius: 0;
-        border-bottom: 1px solid var(--border-muted);
         font-size: 13px;
     }
 
