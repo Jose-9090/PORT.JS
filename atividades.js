@@ -479,6 +479,79 @@ function aplicarPermissao() {
     form.style.display = podeAdicionarAtividade() ? '' : 'none';
 }
 
+// ---------- Lightbox: amplia a atividade escolhida (melhor do eixo) ----------
+
+var lightboxDestaqueEl = null;
+
+function garantirLightboxDestaque() {
+    if (lightboxDestaqueEl) return lightboxDestaqueEl;
+
+    lightboxDestaqueEl = document.createElement('div');
+    lightboxDestaqueEl.className = 'lightbox-destaque';
+    lightboxDestaqueEl.setAttribute('aria-hidden', 'true');
+    lightboxDestaqueEl.innerHTML =
+        '<button type="button" class="lightbox-fechar" aria-label="Fechar">×</button>' +
+        '<figure class="lightbox-conteudo">' +
+            '<img class="lightbox-img" alt="">' +
+            '<figcaption class="lightbox-legenda"></figcaption>' +
+        '</figure>';
+
+    lightboxDestaqueEl.addEventListener('click', function (e) {
+        if (e.target === lightboxDestaqueEl || e.target.closest('.lightbox-fechar')) {
+            fecharLightboxDestaque();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightboxDestaqueEl && lightboxDestaqueEl.classList.contains('aberto')) {
+            fecharLightboxDestaque();
+        }
+    });
+
+    document.body.appendChild(lightboxDestaqueEl);
+    return lightboxDestaqueEl;
+}
+
+function abrirLightboxDestaque(figura) {
+    var img = figura.querySelector('img');
+    if (!img) return;
+
+    var src = img.currentSrc || img.getAttribute('src') || figura.dataset.imagem || '';
+    if (!src) return;
+
+    var lb = garantirLightboxDestaque();
+    var lbImg = lb.querySelector('.lightbox-img');
+    var lbLegenda = lb.querySelector('.lightbox-legenda');
+    var nome = figura.dataset.nome || (figura.querySelector('figcaption') ? figura.querySelector('figcaption').textContent.trim() : '');
+
+    lbImg.src = src;
+    lbImg.alt = nome || 'Atividade em destaque';
+    lbLegenda.textContent = nome;
+
+    lb.classList.add('aberto');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function fecharLightboxDestaque() {
+    if (!lightboxDestaqueEl) return;
+    lightboxDestaqueEl.classList.remove('aberto');
+    lightboxDestaqueEl.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+function configurarLightboxDestaque() {
+    if (document.body.dataset.lightboxDestaque === '1') return;
+    document.body.dataset.lightboxDestaque = '1';
+
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.btn-destaque')) return;
+        var figura = e.target.closest('.container figure');
+        if (!figura || !figura.classList.contains('destaque')) return;
+        abrirLightboxDestaque(figura);
+    });
+}
+
 async function inicializarPagina(pagina) {
     aplicarPermissao();
     await carregarAtividadesSalvas(pagina);
@@ -486,4 +559,5 @@ async function inicializarPagina(pagina) {
     prepararFiguras(pagina);
     await carregarDestaques(pagina);
     aplicarDestaques(pagina);
+    configurarLightboxDestaque();
 }
