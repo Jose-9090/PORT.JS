@@ -152,11 +152,16 @@ function aplicarDestaques(pagina) {
         if (botao) {
             var icone = botao.querySelector('.bd-icone');
             var texto = botao.querySelector('.bd-texto');
+            var temDestaqueNoEixo = !!destaquesAtuais[figura.dataset.eixo];
 
             botao.classList.toggle('ativo', destacada);
             botao.setAttribute('aria-pressed', destacada ? 'true' : 'false');
             if (icone) icone.textContent = destacada ? '★' : '☆';
             if (texto) texto.textContent = destacada ? 'Remover destaque' : 'Melhor do eixo';
+
+            // Com destaque no eixo, só a escolhida exibe a opção de remover; as outras somem.
+            // Sem destaque no eixo, todas as atividades exibem a opção de escolher.
+            botao.style.display = (temDestaqueNoEixo && !destacada) ? 'none' : '';
         }
     }
 }

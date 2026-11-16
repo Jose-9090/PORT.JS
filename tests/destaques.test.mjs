@@ -90,26 +90,41 @@ test('admin vê o botão "Melhor do eixo" em todas as atividades', async () => {
 test('escolher uma atividade destaca e salva no eixo correto', async () => {
   const dom = criarPagina();
   const figuras = await figurasDaPagina(dom);
-  const primeira = figuras[0];
+  const [primeira, segunda] = figuras;
 
   clicarBotao(primeira);
   await aguardar();
 
   assert.ok(primeira.classList.contains('destaque'));
   assert.equal(primeira.querySelector('.selo-destaque')?.textContent, 'MELHOR DO EIXO');
+  assert.equal(segunda.querySelector('.btn-destaque').style.display, 'none');
   assert.deepEqual(destaquesSalvos(dom).eixo1, {
     nome: 'Atividade A',
     imagem: './img/a.png',
   });
 });
 
-test('só uma atividade fica destacada por eixo', async () => {
+test('com destaque no eixo, só a escolhida pode ser removida e as outras ficam sem opção', async () => {
   const dom = criarPagina();
   const figuras = await figurasDaPagina(dom);
   const [primeira, segunda] = figuras;
 
   clicarBotao(primeira);
   await aguardar();
+
+  assert.equal(primeira.classList.contains('destaque'), true);
+  assert.equal(segunda.classList.contains('destaque'), false);
+  assert.notEqual(primeira.querySelector('.btn-destaque').style.display, 'none');
+  assert.equal(primeira.querySelector('.btn-destaque').textContent.includes('Remover destaque'), true);
+  assert.equal(segunda.querySelector('.btn-destaque').style.display, 'none');
+
+  // para trocar, precisa remover primeiro
+  clicarBotao(primeira);
+  await aguardar();
+
+  assert.notEqual(primeira.querySelector('.btn-destaque').style.display, 'none');
+  assert.notEqual(segunda.querySelector('.btn-destaque').style.display, 'none');
+
   clicarBotao(segunda);
   await aguardar();
 
