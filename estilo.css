@@ -384,13 +384,14 @@ section ul {
 }
 
 figure {
+    position: relative;
     margin: 16px 6px;
     background: var(--surface);
     border: 1px solid var(--border-muted);
     border-radius: var(--r-lg);
     padding: 14px 12px 12px;
 
-    transition: border-color 0.25s, background 0.25s;
+    transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
 }
 
 figure:hover {
@@ -406,6 +407,116 @@ figcaption {
     font-weight: 500;
     letter-spacing: 0.01em;
     text-align: center;
+}
+
+/* ===== Melhor atividade do eixo ===== */
+figure.destaque {
+    background:
+        linear-gradient(180deg, rgba(250, 178, 131, 0.11), rgba(250, 178, 131, 0.015)),
+        var(--surface);
+    border-color: var(--accent);
+    box-shadow:
+        0 0 0 1px var(--accent-line),
+        0 12px 34px rgba(0, 0, 0, 0.45),
+        0 0 26px rgba(250, 178, 131, 0.10);
+}
+
+figure.destaque:hover {
+    background:
+        linear-gradient(180deg, rgba(250, 178, 131, 0.14), rgba(250, 178, 131, 0.025)),
+        var(--elevated);
+    border-color: var(--accent-hover);
+}
+
+figure.destaque img {
+    border-color: var(--accent-line);
+}
+
+figure.destaque figcaption {
+    color: var(--text);
+}
+
+.selo-destaque {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 999px;
+
+    background: rgba(12, 12, 14, 0.68);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    backdrop-filter: blur(10px) saturate(160%);
+    border: 1px solid var(--accent-line);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+
+    color: var(--accent);
+    font-family: var(--font);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.selo-destaque::before {
+    content: '★';
+    font-size: 10px;
+}
+
+.btn-destaque {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    margin-top: 11px;
+    padding: 7px 12px;
+    max-width: 100%;
+
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid var(--border-muted);
+    border-radius: 999px;
+
+    color: var(--text-muted);
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+
+    transition: color 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-destaque .bd-icone {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.btn-destaque:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border);
+}
+
+.btn-destaque:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.btn-destaque.ativo {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent-line);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.btn-destaque.ativo:hover {
+    color: #ffffff;
+    background: rgba(250, 178, 131, 0.20);
+    border-color: var(--accent);
 }
 
 /* Caixa de prompt que abraça o conteúdo */

@@ -45,6 +45,250 @@ function podeAdicionarAtividade() {
         && emailLogado() === EMAIL_ADMIN.trim().toLowerCase();
 }
 
+// ---------- Destaques: melhor atividade de cada eixo ----------
+
+var destaquesAtuais = {};
+
+function normalizarTexto(valor) {
+    return String(valor || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function eixoDoContainer(container) {
+    if (!container) return '';
+
+    var id = container.getAttribute('id') || '';
+    var eixoDoId = id.match(/^(eixo\d+)-/i);
+    if (eixoDoId) return eixoDoId[1].toLowerCase();
+
+    // Containers estáticos (ex.: EIXO 1) não têm id; o eixo vem do h3 anterior.
+    var anterior = container.previousElementSibling;
+    while (anterior && anterior.tagName !== 'H3') {
+        anterior = anterior.previousElementSibling;
+    }
+    if (anterior) {
+        var eixoDoTitulo = anterior.textContent.match(/EIXO\s*(\d+)/i);
+        if (eixoDoTitulo) return 'eixo' + eixoDoTitulo[1];
+    }
+
+    return '';
+}
+
+function prepararFigura(pagina, figura, eixo) {
+    if (!figura) return;
+
+    if (eixo && !figura.dataset.eixo) figura.dataset.eixo = eixo;
+
+    var legenda = figura.querySelector('figcaption');
+    if (!figura.dataset.nome) {
+        figura.dataset.nome = legenda ? legenda.textContent.trim() : '';
+    }
+
+    var imagem = figura.querySelector('img');
+    if (!figura.dataset.imagem) {
+        figura.dataset.imagem = imagem ? (imagem.getAttribute('src') || '') : '';
+    }
+
+    if (!podeAdicionarAtividade()) return;
+    if (figura.querySelector('.btn-destaque')) return;
+
+    var botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = 'btn-destaque';
+    botao.setAttribute('aria-pressed', 'false');
+    botao.innerHTML = '<span class="bd-icone" aria-hidden="true">☆</span>' +
+        '<span class="bd-texto">Melhor do eixo</span>';
+    botao.addEventListener('click', function () {
+        alternarDestaque(pagina, figura);
+    });
+
+    figura.appendChild(botao);
+}
+
+function prepararFiguras(pagina) {
+    var containers = document.querySelectorAll('.container');
+    for (var i = 0; i < containers.length; i++) {
+        var eixo = eixoDoContainer(containers[i]);
+        var figuras = containers[i].querySelectorAll('figure');
+        for (var j = 0; j < figuras.length; j++) {
+            prepararFigura(pagina, figuras[j], eixo);
+        }
+    }
+}
+
+function figuraEhDestaque(figura) {
+    var destaque = destaquesAtuais[figura.dataset.eixo];
+    if (!destaque) return false;
+
+    var imagem = figura.dataset.imagem || '';
+    if (destaque.imagem && imagem && destaque.imagem === imagem) return true;
+
+    var nome = normalizarTexto(figura.dataset.nome);
+    return !!nome && nome === normalizarTexto(destaque.nome);
+}
+
+function aplicarDestaques(pagina) {
+    var figuras = document.querySelectorAll('.container figure');
+    for (var i = 0; i < figuras.length; i++) {
+        var figura = figuras[i];
+        if (!figura.dataset.eixo) continue;
+
+        var destacada = figuraEhDestaque(figura);
+        var selo = figura.querySelector('.selo-destaque');
+        var botao = figura.querySelector('.btn-destaque');
+
+        figura.classList.toggle('destaque', destacada);
+
+        if (destacada) {
+            if (!selo) {
+                selo = document.createElement('span');
+                selo.className = 'selo-destaque';
+                selo.textContent = 'MELHOR DO EIXO';
+                figura.insertBefore(selo, figura.firstChild);
+            }
+        } else if (selo) {
+            selo.remove();
+        }
+
+        if (botao) {
+            var icone = botao.querySelector('.bd-icone');
+            var texto = botao.querySelector('.bd-texto');
+
+            botao.classList.toggle('ativo', destacada);
+            botao.setAttribute('aria-pressed', destacada ? 'true' : 'false');
+            if (icone) icone.textContent = destacada ? '★' : '☆';
+            if (texto) texto.textContent = destacada ? 'Remover destaque' : 'Melhor do eixo';
+        }
+    }
+}
+
+function lerDestaquesLocal(pagina) {
+    try {
+        var salvos = JSON.parse(localStorage.getItem('destaques_' + pagina) || '{}');
+        return salvos && typeof salvos === 'object' ? salvos : {};
+    } catch (err) {
+        return {};
+    }
+}
+
+function carregarDestaquesLocal(pagina) {
+    var salvos = lerDestaquesLocal(pagina);
+    for (var eixo in salvos) {
+        if (Object.prototype.hasOwnProperty.call(salvos, eixo) && salvos[eixo] && salvos[eixo].nome) {
+            destaquesAtuais[eixo] = {
+                nome: salvos[eixo].nome,
+                imagem: salvos[eixo].imagem || ''
+            };
+        }
+    }
+}
+
+function salvarDestaqueLocal(pagina, eixo, dados) {
+    var salvos = lerDestaquesLocal(pagina);
+    if (dados) {
+        salvos[eixo] = dados;
+    } else {
+        delete salvos[eixo];
+    }
+    localStorage.setItem('destaques_' + pagina, JSON.stringify(salvos));
+}
+
+async function carregarDestaques(pagina) {
+    destaquesAtuais = {};
+
+    if (!supabaseConfigurado()) {
+        carregarDestaquesLocal(pagina);
+        return;
+    }
+
+    try {
+        var resultado = await supabaseClient
+            .from('destaques')
+            .select('eixo, nome, imagem')
+            .eq('pagina', pagina);
+
+        if (resultado.error) throw resultado.error;
+
+        for (var i = 0; i < resultado.data.length; i++) {
+            var linha = resultado.data[i];
+            destaquesAtuais[linha.eixo] = {
+                nome: linha.nome,
+                imagem: linha.imagem || ''
+            };
+        }
+    } catch (err) {
+        console.error('Erro ao carregar destaques:', err.message);
+        carregarDestaquesLocal(pagina);
+    }
+}
+
+async function salvarDestaque(pagina, eixo, dados) {
+    if (!supabaseConfigurado()) {
+        salvarDestaqueLocal(pagina, eixo, dados);
+        return true;
+    }
+
+    try {
+        var resultado;
+
+        if (dados) {
+            resultado = await supabaseClient
+                .from('destaques')
+                .upsert(
+                    { pagina: pagina, eixo: eixo, nome: dados.nome, imagem: dados.imagem || null },
+                    { onConflict: 'pagina,eixo' }
+                );
+        } else {
+            resultado = await supabaseClient
+                .from('destaques')
+                .delete()
+                .eq('pagina', pagina)
+                .eq('eixo', eixo);
+        }
+
+        if (resultado.error) throw resultado.error;
+        return true;
+    } catch (err) {
+        console.error('Erro ao salvar destaque:', {
+            message: err && err.message,
+            code: err && err.code,
+            details: err && err.details,
+            hint: err && err.hint
+        });
+
+        var detalhe = (err && err.code ? err.code + ': ' : '') + ((err && err.message) || 'erro desconhecido');
+        var dica = err && err.hint ? '\n\nDica do Supabase: ' + err.hint : '';
+        alert('Não consegui salvar o destaque.\n\n' + detalhe + dica +
+            '\n\nSe o código for PGRST205, rode o SQL da tabela "destaques" no SQL Editor do Supabase.');
+
+        return false;
+    }
+}
+
+async function alternarDestaque(pagina, figura) {
+    if (!podeAdicionarAtividade() || !figura) return;
+
+    var eixo = figura.dataset.eixo;
+    var nome = figura.dataset.nome;
+    if (!eixo || !nome) return;
+
+    var jaEscolhida = figuraEhDestaque(figura);
+    var novoDestaque = jaEscolhida ? null : {
+        nome: nome,
+        imagem: figura.dataset.imagem || ''
+    };
+
+    var salvou = await salvarDestaque(pagina, eixo, novoDestaque);
+    if (!salvou) return;
+
+    if (novoDestaque) {
+        destaquesAtuais[eixo] = novoDestaque;
+    } else {
+        delete destaquesAtuais[eixo];
+    }
+
+    aplicarDestaques(pagina);
+}
+
 // ---------- Funções auxiliares ----------
 
 function adicionarFigura(pagina, eixo, nome, imagem) {
@@ -67,6 +311,8 @@ function adicionarFigura(pagina, eixo, nome, imagem) {
     figure.appendChild(img);
     figure.appendChild(figcaption);
     container.appendChild(figure);
+
+    prepararFigura(pagina, figure, eixo);
 }
 
 function dataURLparaBlob(dataURL) {
@@ -232,4 +478,7 @@ async function inicializarPagina(pagina) {
     aplicarPermissao();
     await carregarAtividadesSalvas(pagina);
     await migrarAtividadesLocais(pagina);
+    prepararFiguras(pagina);
+    await carregarDestaques(pagina);
+    aplicarDestaques(pagina);
 }

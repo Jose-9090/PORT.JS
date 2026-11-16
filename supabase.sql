@@ -30,6 +30,26 @@ create policy "portfolio_atividades" on public.atividades
     using (true)
     with check (true);
 
+-- ---------- DESTAQUES (melhor atividade de cada eixo) ----------
+-- Um registro por pagina + eixo. O upsert substitui a escolha anterior.
+create table if not exists public.destaques (
+    id bigint generated always as identity primary key,
+    pagina text not null,
+    eixo text not null,
+    nome text not null,
+    imagem text,
+    created_at timestamptz not null default now(),
+    unique (pagina, eixo)
+);
+
+alter table public.destaques enable row level security;
+
+drop policy if exists "portfolio_destaques" on public.destaques;
+create policy "portfolio_destaques" on public.destaques
+    for all to anon
+    using (true)
+    with check (true);
+
 -- ---------- STORAGE (bucket das imagens) ----------
 -- Cria o bucket "atividades" como público (se já existir, só garante que é público).
 insert into storage.buckets (id, name, public)
